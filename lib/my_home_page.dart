@@ -1,3 +1,4 @@
+import 'package:calendar/add_event_page.dart';
 import 'package:calendar/main.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -17,6 +18,7 @@ class _MyHomePageState extends State<MyHomePage> {
   void initState() {
     super.initState();
     _eventController = TextEditingController();
+    _selectedDay = DateTime.now(); // 初期化を追加
   }
 
   @override
@@ -36,8 +38,10 @@ class _MyHomePageState extends State<MyHomePage> {
             },
           ),
           backgroundColor: Colors.pinkAccent,
-          title: Text(DateFormat.yMMMM('ja_JP').format(_selectedDay),
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),),
+          title: Text(
+            DateFormat.yMMMM('ja_JP').format(_selectedDay),
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          ),
           actions: [
             IconButton(
               icon: Icon(Icons.arrow_forward),
@@ -53,7 +57,6 @@ class _MyHomePageState extends State<MyHomePage> {
         body: Column(
           children: [
             _buildCalendarHeader(),
-
             TableCalendar(
               headerVisible: true,
               headerStyle: const HeaderStyle(
@@ -92,19 +95,21 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
         floatingActionButton: FloatingActionButton(
           backgroundColor: Colors.pinkAccent,
-
           onPressed: () {
-            if (_selectedDay != null) {
-              Event newEvent = Event(_eventController.text, _selectedDay);
-              eventProvider.addEvent(newEvent);
-              _eventController.clear();
-            }
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => AddEventPage(),
+                fullscreenDialog: true,
+              ),
+            );
           },
           child: Icon(Icons.add),
         ),
       ),
     );
   }
+
   Widget _buildCalendarHeader() {
     return Padding(
       padding: const EdgeInsets.all(8.0),
@@ -137,4 +142,31 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
     );
   }
+
+// void _showBottomSheet(BuildContext context) {
+//   showModalBottomSheet(
+//     context: context,
+//     builder: (BuildContext context) {
+//       return Container(
+//         height: MediaQuery.of(context).size.height * 0.5, // 画面の半分までの高さ
+//         child: Column(
+//           mainAxisAlignment: MainAxisAlignment.center,
+//           children: <Widget>[
+//             Text(
+//               'This is a half-screen bottom sheet!',
+//               style: TextStyle(fontSize: 20.0),
+//             ),
+//             SizedBox(height: 20.0),
+//             ElevatedButton(
+//               onPressed: () {
+//                 Navigator.pop(context);
+//               },
+//               child: Text('Close'),
+//             ),
+//           ],
+//         ),
+//       );
+//     },
+//   );
+// }//下から出る画面
 }
