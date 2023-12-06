@@ -11,13 +11,15 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  late TextEditingController _eventController;
+  late CalendarFormat _calendarFormat;
+  late DateTime _focusedDay;
   late DateTime _selectedDay;
 
   @override
   void initState() {
     super.initState();
-    _eventController = TextEditingController();
+    _calendarFormat = CalendarFormat.month;
+    _focusedDay = DateTime.now();
     _selectedDay = DateTime.now(); // 初期化を追加
   }
 
@@ -29,7 +31,7 @@ class _MyHomePageState extends State<MyHomePage> {
       child: Scaffold(
         appBar: AppBar(
           leading: IconButton(
-            icon: Icon(Icons.arrow_back),
+            icon: Icon(Icons.arrow_back_ios),
             onPressed: () {
               setState(() {
                 _selectedDay = _selectedDay.subtract(Duration(days: 30));
@@ -38,13 +40,20 @@ class _MyHomePageState extends State<MyHomePage> {
             },
           ),
           backgroundColor: Colors.pinkAccent,
-          title: Text(
-            DateFormat.yMMMM('ja_JP').format(_selectedDay),
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          title: Align(
+            alignment: Alignment.bottomLeft,
+            child: Text(
+              DateFormat.yMMMM('ja_JP').format(_selectedDay),
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
           ),
           actions: [
             IconButton(
-              icon: Icon(Icons.arrow_forward),
+              onPressed: () {},
+              icon: Icon(Icons.calendar_month),
+            ),
+            IconButton(
+              icon: Icon(Icons.arrow_forward_ios),
               onPressed: () {
                 setState(() {
                   _selectedDay = _selectedDay.add(Duration(days: 30));
@@ -52,34 +61,43 @@ class _MyHomePageState extends State<MyHomePage> {
                 });
               },
             ),
+
           ],
         ),
         body: Column(
           children: [
-            _buildCalendarHeader(),
+            SizedBox(
+              height: 20,
+            ),
+            // _buildCalendarHeader(),
             TableCalendar(
-              headerVisible: true,
+              headerVisible: false,
               headerStyle: const HeaderStyle(
                 formatButtonVisible: false, //2weeksボタンの非表示
                 titleCentered: true,
               ),
               locale: 'ja_JP',
               // ロケールを日本語に設定
-              onDaySelected: (date, events) {
-                setState(() {
-                  _selectedDay = date;
-                });
-              },
+
+              calendarFormat: _calendarFormat,
+              focusedDay: _focusedDay,
               firstDay: DateTime.utc(2023, 1, 1),
               lastDay: DateTime.utc(2025, 12, 31),
-              focusedDay: DateTime.now(),
+              onFormatChanged: (format) {
+                setState(() {
+                  _calendarFormat = format;
+                });
+              },
+              onDaySelected: (selectedDay, focusedDay) {
+                setState(() {
+                  _selectedDay = selectedDay;
+                  _focusedDay = focusedDay; // 更新することも可能
+                });
+              },
             ),
-            TextFormField(
-              controller: _eventController,
-              decoration: InputDecoration(labelText: '予定を追加'),
-            ),
-            SizedBox(height: 20),
+            Text('予定一覧'),
             Expanded(
+
               child: ListView.builder(
                 itemCount: eventProvider.events.length,
                 itemBuilder: (context, index) {
@@ -110,38 +128,7 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  Widget _buildCalendarHeader() {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          IconButton(
-            icon: Icon(Icons.arrow_back),
-            onPressed: () {
-              setState(() {
-                _selectedDay = _selectedDay.subtract(Duration(days: 30));
-                // _controller.jumpToPage(_selectedDay);
-              });
-            },
-          ),
-          Text(
-            DateFormat.yMMMM('ja_JP').format(_selectedDay),
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-          ),
-          IconButton(
-            icon: Icon(Icons.arrow_forward),
-            onPressed: () {
-              setState(() {
-                _selectedDay = _selectedDay.add(Duration(days: 30));
-                // _controller.jumpToPage(_selectedDay);
-              });
-            },
-          ),
-        ],
-      ),
-    );
-  }
+
 
 // void _showBottomSheet(BuildContext context) {
 //   showModalBottomSheet(

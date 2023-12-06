@@ -11,12 +11,10 @@ class AddEventPage extends StatelessWidget {
         backgroundColor: Colors.pinkAccent,
         title: Text('予定を追加'),
         actions: [
-          TextButton(
-              onPressed: () {},
-              child: Text(
-                '保存',
-                style: TextStyle(fontSize: 18, color: Colors.white),
-              ))
+          IconButton(
+            onPressed: () {},
+            icon: Icon(Icons.check),
+          ),
         ],
       ),
       body: Padding(
@@ -24,19 +22,30 @@ class AddEventPage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              '予定タイトル',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
             TextField(
               controller: _eventController,
               decoration: InputDecoration(
-                hintText: 'タイトル',
+                hintText: '予定のタイトルを入力',
               ),
+            ),
+            SizedBox(
+              height: 10,
+            ),
+            Text(
+              'カラー',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             SizedBox(height: 20),
             Text(
-              '日時',
+              '終日',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            Text(
+              '開始',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            Text(
+              '終了',
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             TextField(
@@ -46,18 +55,6 @@ class AddEventPage extends StatelessWidget {
               ),
             ),
             SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                // 予定を追加する処理
-                if (_eventController.text.isNotEmpty) {
-                  Navigator.pop(
-                    context,
-                    _eventController.text,
-                  );
-                }
-              },
-              child: Text('保存'),
-            ),
           ],
         ),
       ),
