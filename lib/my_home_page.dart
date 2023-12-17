@@ -83,6 +83,9 @@ class _MyHomePageState extends State<MyHomePage> {
               focusedDay: _focusedDay,
               firstDay: DateTime.utc(2023, 1, 1),
               lastDay: DateTime.utc(2025, 12, 31),
+              selectedDayPredicate: (day) {
+                return isSameDay(_selectedDay, day);
+              },
               onFormatChanged: (format) {
                 setState(() {
                   _calendarFormat = format;
